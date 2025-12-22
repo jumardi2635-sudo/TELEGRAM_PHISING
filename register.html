@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Akun Baru</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="auth-page">
+
+    <div class="auth-card">
+        <h2 style="color: #0d47a1;">Buat Akun</h2>
+        <p style="color: #666; font-size: 0.9rem; margin-bottom: 20px;">Isi data diri Anda untuk bergabung.</p>
+        
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                <div class="alert-error">{{ messages[0] }}</div>
+            {% endif %}
+        {% endwith %}
+
+        <form method="POST">
+            <input type="text" name="fullname" placeholder="Nama Lengkap" required>
+            
+            <input type="text" name="username" placeholder="Username (tanpa spasi)" required>
+            
+            <input type="password" name="password" placeholder="Password" required>
+            
+            <button type="submit" style="background-color: #28a745;">DAFTAR SEKARANG</button>
+        </form>
+        
+        <a href="/login" class="link">Sudah punya akun? <b>Login di sini</b></a>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dompet Saya</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="dashboard-page">
+
+    <div class="header-container" style="padding-bottom: 50px;">
+        <h3 style="margin:0;">Dompet Saya</h3>
+        <p style="opacity: 0.8; font-size: 0.9rem;">Kelola keuangaan Anda</p>
+    </div>
+
+    <div style="margin-top: -40px; padding: 0 20px;">
+        <div class="balance-card" style="text-align: center; padding: 30px;">
+            <p style="color: #666; margin-bottom: 5px;">Total Saldo</p>
+            <h1 style="color: #1e3c72; font-size: 2.5rem; margin: 0;">
+                Rp {{ "{:,.0f}".format(user.saldo).replace(',', '.') }}
+            </h1>
+        </div>
+    </div>
+
+    <div class="menu-grid" style="margin-top: 20px;">
+        <a href="{{ url_for('topup') }}" class="menu-item">
+            <div class="icon-box blue"><i class="fa-solid fa-plus"></i></div>
+            <span>Top Up</span>
+        </a>
+        <a href="{{ url_for('riwayat') }}" class="menu-item">
+            <div class="icon-box orange"><i class="fa-solid fa-clock-rotate-left"></i></div>
+            <span>Riwayat</span>
+        </a>
+    </div>
+
+    <nav class="bottom-nav">
+        <a href="{{ url_for('home') }}" class="nav-link">
+            <i class="fa-solid fa-house"></i>
+            <span>Beranda</span>
+        </a>
+        <a href="{{ url_for('dompet') }}" class="nav-link active">
+            <i class="fa-solid fa-wallet"></i>
+            <span>Dompet</span>
+        </a>
+        <a href="#" class="nav-link">
+            <i class="fa-solid fa-bell"></i>
+            <span class="badge">3</span>
+            <span>Notif</span>
+        </a>
+        <a href="{{ url_for('profil') }}" class="nav-link">
+            <i class="fa-solid fa-user"></i>
+            <span>Profil</span>
+        </a>
+    </nav>
+</body>
+</html>

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Saya</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="dashboard-page">
+    <div class="auth-card" style="margin: 20px auto; max-width: 90%;">
+        <h3>Profil Member</h3>
+        <div style="font-size: 3rem; color: #1e3c72; margin: 20px 0;"><i class="fa-solid fa-circle-user"></i></div>
+        
+        <div style="text-align: left; margin-bottom: 20px;">
+            <p><strong>Nama Lengkap:</strong><br>{{ user.full_name }}</p>
+            <hr style="border: 0; border-top: 1px solid #eee; margin: 10px 0;">
+            <p><strong>Username:</strong><br>@{{ user.username }}</p>
+            <hr style="border: 0; border-top: 1px solid #eee; margin: 10px 0;">
+            <p><strong>Saldo Saat Ini:</strong><br>Rp {{ "{:,.0f}".format(user.saldo) }}</p>
+        </div>
+
+        <a href="/" class="btn-topup" style="display:block; text-align:center; text-decoration:none;">Kembali ke Home</a>
+        <br>
+        <a href="/logout" style="color: red; text-decoration: none;">Log Out</a>
+    </div>
+</body>
+</html>

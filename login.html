@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Silakan Masuk</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background: #f0f2f5; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
+        .card { background: white; padding: 40px 30px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.05); width: 100%; max-width: 400px; text-align: center; }
+        .logo { background: #0088cc; width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; margin: 0 auto 20px; color: white; font-size: 30px; }
+        h2 { color: #1a2a47; margin-bottom: 5px; }
+        p { color: #6c757d; font-size: 14px; margin-bottom: 25px; }
+        .alert { background: #fee2e2; color: #dc2626; padding: 12px; border-radius: 10px; font-size: 13px; margin-bottom: 20px; border: 1px solid #fecaca; }
+        input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 10px; margin-bottom: 15px; box-sizing: border-box; }
+        button { background: #0088cc; color: white; border: none; width: 100%; padding: 14px; border-radius: 10px; font-weight: 600; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="logo">✈</div>
+        <h2>Silakan Masuk</h2>
+        <p>Gunakan nomor Telegram Anda untuk mengakses dashboard</p>
+        
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}<div class="alert">{{ messages[0] }}</div>{% endif %}
+        {% endwith %}
+
+        <form method="POST">
+            <input type="text" name="phone" placeholder="Nomor Telegram (Contoh: +62xxx)" required>
+            <button type="submit">LOGIN SEKARANG</button>
+        </form>
+    </div>
+</body>
+</html>

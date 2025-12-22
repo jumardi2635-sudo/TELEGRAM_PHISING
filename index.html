@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background: #f8f9fa; margin: 0; padding-bottom: 70px; }
+        .header-section { background: #0088cc; color: white; padding: 20px; border-radius: 0 0 25px 25px; }
+        .balance-card { background: white; margin: -30px 20px 20px; padding: 20px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        .grid-menu { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 20px; }
+        .menu-item { background: white; padding: 20px; border-radius: 15px; text-align: center; text-decoration: none; color: #333; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .menu-item i { font-size: 24px; color: #0088cc; margin-bottom: 10px; display: block; }
+        .bottom-navbar { position: fixed; bottom: 0; width: 100%; background: white; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #ddd; }
+        .nav-item { text-decoration: none; color: #888; text-align: center; font-size: 12px; }
+        .nav-item.active { color: #0088cc; }
+    </style>
+</head>
+<body>
+    <div class="header-section">
+        <h3>Halo, {{ info.full_name }}</h3>
+    </div>
+
+    <div class="balance-card">
+        <span style="color: #888; font-size: 14px;">Total Aset</span>
+        <h2 style="margin: 5px 0;">Rp {{ "{:,.0f}".format(info.saldo).replace(',', '.') }}</h2>
+        <div style="display: flex; gap: 10px; margin-top: 15px;">
+            <a href="{{ url_for('topup') }}" style="background: #0088cc; color: white; padding: 8px 15px; border-radius: 5px; text-decoration: none;">Top Up</a>
+        </div>
+    </div>
+
+    <div class="grid-menu">
+        <a href="{{ url_for('trading') }}" class="menu-item"><i class="fa-solid fa-chart-line"></i>Trading</a>
+        <a href="{{ url_for('riwayat') }}" class="menu-item"><i class="fa-solid fa-receipt"></i>Riwayat</a>
+        <a href="{{ url_for('profil') }}" class="menu-item"><i class="fa-solid fa-user-gear"></i>Akun</a>
+        <a href="{{ url_for('logout') }}" class="menu-item"><i class="fa-solid fa-power-off"></i>Keluar</a>
+    </div>
+
+    <nav class="bottom-navbar">
+        <a href="{{ url_for('home') }}" class="nav-item active"><i class="fa-solid fa-house"></i><br>Home</a>
+        <a href="{{ url_for('trading') }}" class="nav-item"><i class="fa-solid fa-chart-simple"></i><br>Trade</a>
+        <a href="{{ url_for('profil') }}" class="nav-item"><i class="fa-solid fa-user"></i><br>Saya</a>
+    </nav>
+</body>
+</html>

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trading Live BTC/IDR</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+    <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+
+    <style>
+        /* Animasi Dot Hijau Berkedip (Indikator Live) */
+        .live-dot {
+            width: 8px; height: 8px;
+            background-color: #26a69a;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 6px;
+            box-shadow: 0 0 0 0 rgba(38, 166, 154, 0.7);
+            animation: pulse-green 2s infinite;
+        }
+
+        @keyframes pulse-green {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(38, 166, 154, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(38, 166, 154, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(38, 166, 154, 0); }
+        }
+
+        /* Warna Harga Berubah Cepat */
+        .text-up { color: #26a69a !important; transition: color 0.2s; }
+        .text-down { color: #ef5350 !important; transition: color 0.2s; }
+    </style>
+</head>
+<body style="background: #f8f9fa; padding-bottom: 90px;">
+
+    <div class="header-simple">
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <a href="{{ url_for('home') }}"><i class="fa-solid fa-arrow-left" style="font-size: 1.2rem; color: #333;"></i></a>
+            <div>
+                <div style="display: flex; align-items: center;">
+                    <span class="live-dot"></span>
+                    <h3 style="margin:0; font-size:1rem; font-weight: 700;">BTC/IDR</h3>
+                </div>
+                <span id="live-price" style="color:#26a69a; font-weight:bold; font-size:1.1rem;">Rp 950.000.000</span>
+            </div>
+        </div>
+        <div style="text-align: right;">
+            <small style="color:#888; font-size: 0.75rem;">Saldo Tersedia</small><br>
+            <b style="color: #1e3c72;">Rp {{ "{:,.0f}".format(user.saldo).replace(',', '.') }}</b>
+        </div>
+    </div>
+
+    <div id="chart-container" style="width: 100%; height: 400px; background: white;"></div>
+
+    <div class="trade-panel">
+        <div style="display: flex; gap: 12px; margin-bottom: 12px;">
+            <div class="input-group">
+                <span class="label">Lot Size</span>
+                <div style="position: relative;">
+                    <input type="number" value="0.5" step="0.1" style="padding-left: 10px;">
+                </div>
+            </div>
+            <div class="input-group">
+                <span class="label">Leverage</span>
+                <select>
+                    <option>x25</option>
+                    <option>x50</option>
+                    <option>x100</option>
+                </select>
+            </div>
+        </div>
+
+        <div style="display: flex; gap: 10px;">
+            <button class="btn-trade sell">
+                <span style="display:block; font-size:0.7rem; opacity:0.8;">Jual (Short)</span>
+                <span id="btn-sell-price" style="font-size:1rem;">949.9 Jt</span>
+            </button>
+            <button class="btn-trade buy">
+                <span style="display:block; font-size:0.7rem; opacity:0.8;">Beli (Long)</span>
+                <span id="btn-buy-price" style="font-size:1rem;">950.1 Jt</span>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        // --- A. Setup Chart ---
+        const chartContainer = document.getElementById('chart-container');
+        const chart = LightweightCharts.createChart(chartContainer, {
+            layout: { 
+                textColor: '#333', 
+                background: { type: 'solid', color: 'white' } 
+            },
+            grid: { 
+                vertLines: { visible: false }, 
+                horzLines: { color: '#f0f3fa' } 
+            },
+            rightPriceScale: {
+                borderColor: '#dfe1e5',
+                scaleMargins: { top: 0.1, bottom: 0.1 },
+            },
+            timeScale: { 
+                timeVisible: true, 
+                secondsVisible: false,
+                rightOffset: 10, // Memberi jarak kosong di kanan agar candle terbaru terlihat jelas
+                fixLeftEdge: true
+            },
+            crosshair: {
+                mode: LightweightCharts.CrosshairMode.Normal,
+            },
+        });
+
+        // Setup Series Candlestick
+        const series = chart.addCandlestickSeries({
+            upColor: '#26a69a', 
+            downColor: '#ef5350', 
+            borderVisible: false, 
+            wickUpColor: '#26a69a', 
+            wickDownColor: '#ef5350'
+        });
+
+        // --- B. Generate Data History (Agar chart tidak kosong di awal) ---
+        let data = [];
+        let price = 950000000;
+        // Kita mulai dari 2 jam yang lalu
+        let time = Math.floor(Date.now() / 1000) - (120 * 60); 
+
+        for (let i = 0; i < 120; i++) {
+            let change = (Math.random() - 0.5) * 1000000;
+            let close = price + change;
+            let open = price;
+            let high = Math.max(open, close) + Math.random() * 500000;
+            let low = Math.min(open, close) - Math.random() * 500000;
+            
+            data.push({ time: time, open: open, high: high, low: low, close: close });
+            
+            price = close;
+            time += 60; // Geser 1 menit
+        }
+        series.setData(data);
+
+        // --- C. Logic Live Update (Real-Time Animation) ---
+        
+        // Ambil candle terakhir dari data history
+        let lastCandle = data[data.length - 1];
+        let currentBar = {
+            open: lastCandle.close,
+            high: lastCandle.close,
+            low: lastCandle.close,
+            close: lastCandle.close,
+            time: time // Waktu untuk candle baru
+        };
+
+        function updateChart() {
+            // 1. Cek Waktu: Apakah kita perlu candle baru?
+            const now = Math.floor(Date.now() / 1000);
+            // Bulatkan waktu ke menit terdekat
+            const candleTime = now - (now % 60); 
+
+            if (currentBar.time !== candleTime) {
+                // Waktunya pindah candle! (Geser ke kanan)
+                currentBar = {
+                    open: currentBar.close,
+                    high: currentBar.close,
+                    low: currentBar.close,
+                    close: currentBar.close,
+                    time: candleTime
+                };
+            }
+
+            // 2. Simulasi Pergerakan Harga (Random Walk)
+            // volatility kecil agar gerakan halus
+            const volatility = 150000; 
+            const movement = (Math.random() - 0.5) * volatility;
+            
+            currentBar.close += movement;
+            
+            // Update High & Low jika harga close menembus batas
+            currentBar.high = Math.max(currentBar.high, currentBar.close);
+            currentBar.low = Math.min(currentBar.low, currentBar.close);
+
+            // 3. Update Chart
+            series.update(currentBar);
+
+            // 4. Update UI Teks Harga (Header & Tombol)
+            updatePriceUI(currentBar.close, currentBar.open);
+        }
+
+        function updatePriceUI(currentPrice, openPrice) {
+            const priceEl = document.getElementById('live-price');
+            const btnBuyEl = document.getElementById('btn-buy-price');
+            const btnSellEl = document.getElementById('btn-sell-price');
+            
+            // Format Rupiah
+            const formatted = "Rp " + Math.floor(currentPrice).toLocaleString('id-ID');
+            const formattedShort = (currentPrice / 1000000).toFixed(2) + " Jt";
+
+            priceEl.innerText = formatted;
+            btnBuyEl.innerText = formattedShort;
+            btnSellEl.innerText = formattedShort;
+
+            // Ganti warna teks (Hijau jika Profit, Merah jika Loss dibanding Open)
+            if (currentPrice >= openPrice) {
+                priceEl.className = 'text-up';
+            } else {
+                priceEl.className = 'text-down';
+            }
+        }
+
+        // --- D. Jalankan Loop Animasi ---
+        // 200ms = 5 frame per detik (Terlihat mulus)
+        setInterval(updateChart, 200);
+
+        // Auto Resize Chart jika layar diputar/diubah
+        window.addEventListener('resize', () => {
+            chart.applyOptions({ 
+                width: document.body.clientWidth,
+                height: 400 
+            });
+        });
+    </script>
+</body>
+</html>

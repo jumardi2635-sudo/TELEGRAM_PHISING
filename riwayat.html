@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riwayat Transaksi</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body class="dashboard-page" style="padding: 20px;">
+    <h2 style="color: #1e3c72; margin-bottom: 20px;">Riwayat</h2>
+
+    <div style="background:white; padding:15px; border-radius:10px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+        <div>
+            <b>Top Up Saldo</b><br>
+            <span style="font-size:0.7rem; color:#888;">20 Des 2025, 10:00</span>
+        </div>
+        <b style="color: green;">+ Rp 50.000</b>
+    </div>
+
+    <div style="background:white; padding:15px; border-radius:10px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+        <div>
+            <b>Pembelian Item</b><br>
+            <span style="font-size:0.7rem; color:#888;">19 Des 2025, 14:30</span>
+        </div>
+        <b style="color: red;">- Rp 20.000</b>
+    </div>
+
+    <a href="/" style="display:block; text-align:center; margin-top:30px; color: #666; text-decoration:none;">Kembali</a>
+</body>
+</html>
